@@ -1,5 +1,5 @@
 from aiogram import Router, F, types
-
+from contextlib import suppress
 from aiogram.filters import Command
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
@@ -76,6 +76,32 @@ async def get_address(message: types.Message, state: FSMContext):
     data = await state.get_data()
     # print(data)
     await edit_json_file('title', data['name'])
+    # print(data)
+    await state.clear()
+    chat_id, video_id, title, artist = await read_json_data()
+    await message.answer(
+        f"Название: {title}\nИсполнитель: {artist}\n<a href=\"https://www.youtube.com/watch?v={video_id}\">link</a>",
+        reply_markup=manage_track(),
+        disable_web_page_preview=False,
+    )
+
+
+@router.callback_query(F.data == "edit_artist")
+async def edit_title(callback: types.CallbackQuery, state: FSMContext) -> None:
+    # chat_id, video_id, title, artist = await read_json_data()
+    await state.set_state(AskArtist.name)
+    with suppress(TelegramBadRequest):
+        await callback.message.edit_text(text="Укажите исполнителя:", reply_markup=None)
+        # f"Укажите число: {new_value}",
+
+
+@router.message(AskArtist.name)
+async def get_address(message: types.Message, state: FSMContext):
+    await state.update_data(name=message.text)
+    # print(message.text)
+    data = await state.get_data()
+    # print(data)
+    await edit_json_file('artist', data['name'])
     # print(data)
     await state.clear()
     chat_id, video_id, title, artist = await read_json_data()
