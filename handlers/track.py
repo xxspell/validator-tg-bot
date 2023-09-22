@@ -32,3 +32,27 @@ async def send_update_message(message: types.Message):
         disable_web_page_preview=False,
     )
     await save_message_id(video_id)
+
+
+@router.callback_query(F.data == "approve")
+async def confirm_data(callback: types.CallbackQuery):
+    chat_id, video_id, title, artist = await read_json_data()
+
+    # print('Подтверждаю данные')
+    try:
+        cursor = connection.cursor()
+        # Обновляем запись в таблице videos_untrusted
+        cursor.execute("UPDATE videos_untrusted SET checked = 1 WHERE video_id = %s", (video_id,))
+        connection.commit()
+
+        # Добавляем или обновляем запись в таблице videos
+        cursor.execute(
+            "INSERT INTO videos (title, artist, video_id) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE title = VALUES("
+            "title)",
+            (title, artist, video_id))
+        connection.commit()
+
+        await callback.message.answer("Окей, принял. Введите /track чтобы продолжить")
+    except Exception as e:
+        print(f"Ошибка при обновлении данных: {str(e)}")
+        await callback.message.answer("Произошла ошибка при обновлении данных")
