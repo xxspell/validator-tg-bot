@@ -110,3 +110,20 @@ async def get_address(message: types.Message, state: FSMContext):
         reply_markup=manage_track(),
         disable_web_page_preview=False,
     )
+
+
+@router.callback_query(F.data == "delete")
+async def confirm_data(callback: types.CallbackQuery):
+    chat_id, video_id, title, artist = await read_json_data()
+
+    # print('Удаляю данные')
+    try:
+        cursor = connection.cursor()
+        # Обновляем запись в таблице videos_untrusted
+        cursor.execute("UPDATE videos_untrusted SET checked = 1 WHERE video_id = %s", (video_id,))
+        connection.commit()
+
+        await callback.message.answer("Окей, удалил. Введите /track чтобы продолжить")
+    except Exception as e:
+        print(f"Ошибка при обновлении данных: {str(e)}")
+        await callback.message.answer("Произошла ошибка при обновлении данных")
