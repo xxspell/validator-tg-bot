@@ -53,8 +53,8 @@ async def confirm_data(callback: types.CallbackQuery):
             "title)",
             (title, artist, video_id))
         connection.commit()
-
-        await callback.message.answer("Окей, принял. Введите /track чтобы продолжить")
+        with suppress(TelegramBadRequest):
+            await callback.message.edit_text("Окей, принял. Введите /track чтобы продолжить")
     except Exception as e:
         print(f"Ошибка при обновлении данных: {str(e)}")
         await callback.message.answer("Произошла ошибка при обновлении данных")
@@ -122,8 +122,8 @@ async def confirm_data(callback: types.CallbackQuery):
         # Обновляем запись в таблице videos_untrusted
         cursor.execute("UPDATE videos_untrusted SET checked = 1 WHERE video_id = %s", (video_id,))
         connection.commit()
-
-        await callback.message.answer("Окей, удалил. Введите /track чтобы продолжить")
+        with suppress(TelegramBadRequest):
+            await callback.message.edit_text("Окей, удалил. Введите /track чтобы продолжить")
     except Exception as e:
         print(f"Ошибка при обновлении данных: {str(e)}")
         await callback.message.answer("Произошла ошибка при обновлении данных")
