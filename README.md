@@ -77,7 +77,8 @@ python bot.py
 
 ## Пример использования
 
-![Пример использования](https://raw.githubusercontent.com/xxspell/validator-tg-bot/service/bot_p.gif)
+https://github.com/xxspell/validator-tg-bot/assets/74972395/ebff408c-28ff-450f-8d8c-17f8d1a9c2d9
+
 
 ## Развитие проекта
 
