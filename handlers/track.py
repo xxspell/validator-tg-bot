@@ -1,15 +1,16 @@
-from aiogram import Router, F, types
 from contextlib import suppress
-from aiogram.filters import Command
-from aiogram.fsm.state import StatesGroup, State
-from aiogram.fsm.context import FSMContext
-from aiogram.exceptions import TelegramBadRequest
 
-from keyboards.for_questions import manage_track
-from tools.json_t import read_json_data, edit_json_file
-from tools.sql import get_data_db, connection
-from tools.message import save_message_id
+from aiogram import F, Router, types
+from aiogram.exceptions import TelegramBadRequest
+from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
+
 from handlers.filters import Admin
+from keyboards.for_questions import manage_track
+from tools.json_t import edit_json_file, read_json_data
+from tools.message import save_message_id
+from tools.sql import connection, get_data_db
 
 router = Router()
 
@@ -22,14 +23,14 @@ class AskArtist(StatesGroup):
     name = State()
 
 
-@router.message(Admin(), Command('track'))
+@router.message(Admin(), Command("track"))
 @router.message(Admin(), F.text.lower() == "трек")
 async def send_update_message(message: types.Message):
     await get_data_db()
 
     chat_id, video_id, title, artist = await read_json_data()
     await message.answer(
-        f"Название: {title}\nИсполнитель: {artist}\n<a href=\"https://www.youtube.com/watch?v={video_id}\">link</a>",
+        f'Название: {title}\nИсполнитель: {artist}\n<a href="https://www.youtube.com/watch?v={video_id}">link</a>',
         reply_markup=manage_track(),
         disable_web_page_preview=False,
     )
@@ -44,17 +45,22 @@ async def confirm_data(callback: types.CallbackQuery):
     try:
         cursor = connection.cursor()
         # Обновляем запись в таблице videos_untrusted
-        cursor.execute("UPDATE videos_untrusted SET checked = 1 WHERE video_id = %s", (video_id,))
+        cursor.execute(
+            "UPDATE videos_untrusted SET checked = 1 WHERE video_id = %s", (video_id,)
+        )
         connection.commit()
 
         # Добавляем или обновляем запись в таблице videos
         cursor.execute(
             "INSERT INTO videos (title, artist, video_id) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE title = VALUES("
             "title)",
-            (title, artist, video_id))
+            (title, artist, video_id),
+        )
         connection.commit()
         with suppress(TelegramBadRequest):
-            await callback.message.edit_text("Окей, принял. Введите /track чтобы продолжить")
+            await callback.message.edit_text(
+                "Окей, принял. Введите /track чтобы продолжить"
+            )
     except Exception as e:
         print(f"Ошибка при обновлении данных: {str(e)}")
         await callback.message.answer("Произошла ошибка при обновлении данных")
@@ -75,12 +81,12 @@ async def get_address(message: types.Message, state: FSMContext):
     # print(message.text)
     data = await state.get_data()
     # print(data)
-    await edit_json_file('title', data['name'])
+    await edit_json_file("title", data["name"])
     # print(data)
     await state.clear()
     chat_id, video_id, title, artist = await read_json_data()
     await message.answer(
-        f"Название: {title}\nИсполнитель: {artist}\n<a href=\"https://www.youtube.com/watch?v={video_id}\">link</a>",
+        f'Название: {title}\nИсполнитель: {artist}\n<a href="https://www.youtube.com/watch?v={video_id}">link</a>',
         reply_markup=manage_track(),
         disable_web_page_preview=False,
     )
@@ -101,12 +107,12 @@ async def get_address(message: types.Message, state: FSMContext):
     # print(message.text)
     data = await state.get_data()
     # print(data)
-    await edit_json_file('artist', data['name'])
+    await edit_json_file("artist", data["name"])
     # print(data)
     await state.clear()
     chat_id, video_id, title, artist = await read_json_data()
     await message.answer(
-        f"Название: {title}\nИсполнитель: {artist}\n<a href=\"https://www.youtube.com/watch?v={video_id}\">link</a>",
+        f'Название: {title}\nИсполнитель: {artist}\n<a href="https://www.youtube.com/watch?v={video_id}">link</a>',
         reply_markup=manage_track(),
         disable_web_page_preview=False,
     )
@@ -120,10 +126,14 @@ async def confirm_data(callback: types.CallbackQuery):
     try:
         cursor = connection.cursor()
         # Обновляем запись в таблице videos_untrusted
-        cursor.execute("UPDATE videos_untrusted SET checked = 1 WHERE video_id = %s", (video_id,))
+        cursor.execute(
+            "UPDATE videos_untrusted SET checked = 1 WHERE video_id = %s", (video_id,)
+        )
         connection.commit()
         with suppress(TelegramBadRequest):
-            await callback.message.edit_text("Окей, удалил. Введите /track чтобы продолжить")
+            await callback.message.edit_text(
+                "Окей, удалил. Введите /track чтобы продолжить"
+            )
     except Exception as e:
         print(f"Ошибка при обновлении данных: {str(e)}")
         await callback.message.answer("Произошла ошибка при обновлении данных")

@@ -18,7 +18,10 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
-# Skip unused variable rules (`F811`).
-ignore = ["F811"]
+ignore = [
+        "F811",
+        "E203"
+        ]
 
-
+[tool.isort]
+profile = "black"
