@@ -22,6 +22,4 @@ ignore = [
         "F811",
         "E203"
         ]
-
-[tool.isort]
-profile = "black"
+line-length = 120
