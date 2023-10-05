@@ -11,14 +11,14 @@ jobs:
         token: ${{ secrets.TELEGRAM_TOKEN }}
         format: markdown
         message: |  #https://help.github.com/en/actions/reference/contexts-and-expression-syntax-for-github-actions#github-context
-           *►New commit [[${{ github.repository }}](github.com/${{ github.repository }})]*
+           *► New commit [${{ github.repository }}](github.com/${{ github.repository }})]*
 
-            *◄[${{ github.actor }}](github.com/${{ github.actor }})* created commit:
+            *◄ [${{ github.actor }}](github.com/${{ github.actor }})* created commit:
 
-            *►Commit message:* ${{ github.event.head_commit.message }}
+            *► Commit message:* ${{ github.event.head_commit.message }}
 
-            *◄Repository:* [${{ github.repository }}](github.com/${{ github.repository }})
+            *◄ Repository:* [${{ github.repository }}](github.com/${{ github.repository }})
 
-            *►Branch:* ${{ github.ref_name }}
+            *► Branch:* ${{ github.ref_name }}
 
-            *◄See changes:* https://github.com/${{ github.repository }}/commit/${{github.sha}}
+            *◄ See changes:* https://github.com/${{ github.repository }}/commit/${{github.sha}}
