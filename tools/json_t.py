@@ -8,7 +8,7 @@ from settings.reader import admin_id
 async def update_json_data(chat_id=None, video_id=None, title=None, artist=None):
     filename = f"current_{admin_id}.json"  # Чтение текущих данных из JSON файла
     try:
-        with open(filename, "r") as file:
+        with open(filename) as file:
             data = json.load(file)
             logging.debug(f"Update Json - {filename}.\n Old data: {data} ")
     except FileNotFoundError:
@@ -36,7 +36,7 @@ async def edit_json_file(key_to_edit, new_value):
     filename = f"current_{admin_id}.json"
     try:
         # Чтение данных из файла
-        with open(filename, "r", encoding="utf-8") as file:
+        with open(filename, encoding="utf-8") as file:
             data = json.load(file)
             logging.debug(f"Update Json - {filename}.\n Old data: {data} ")
 
@@ -59,7 +59,7 @@ async def edit_json_file(key_to_edit, new_value):
 async def read_json_data():
     filename = f"current_{admin_id}.json"
     try:
-        with open(filename, "r", encoding="utf-8") as file:
+        with open(filename, encoding="utf-8") as file:
             data = json.load(file)
             chat_id = data.get("chat_id")
             video_id = data.get("video_id")
