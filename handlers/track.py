@@ -15,6 +15,12 @@ from tools.sql import connection, get_data_db
 router = Router()
 
 
+async def message_track():
+    chat_id, video_id, title, artist = await read_json_data()
+    message = f'Название: <code>{title}</code>\nИсполнитель: <code>{artist}</code>\n<a href="https://www.youtube.com/watch?v={video_id}">link</a>'
+    return message, chat_id, video_id, title, artist
+
+
 class AskName(StatesGroup):
     name = State()
 
@@ -27,14 +33,13 @@ class AskArtist(StatesGroup):
 @router.message(Admin(), F.text.lower() == "трек")
 async def send_update_message(message: types.Message):
     await get_data_db()
-
-    chat_id, video_id, title, artist = await read_json_data()
+    data = await message_track()
     await message.answer(
-        f'Название: {title}\nИсполнитель: {artist}\n<a href="https://www.youtube.com/watch?v={video_id}">link</a>',
+        data[0],
         reply_markup=manage_track(),
         disable_web_page_preview=False,
     )
-    await save_message_id(video_id)
+    await save_message_id(data[2])
 
 
 @router.callback_query(F.data == "approve")
@@ -70,8 +75,11 @@ async def confirm_data(callback: types.CallbackQuery):
 async def edit_title(callback: types.CallbackQuery, state: FSMContext) -> None:
     # chat_id, video_id, title, artist = await read_json_data()
     await state.set_state(AskName.name)
+    data = await message_track()
     with suppress(TelegramBadRequest):
-        await callback.message.edit_text(text="Укажите название:", reply_markup=None)
+        await callback.message.edit_text(
+            text=f"Укажите название(<code>{data[3]}</code>):", reply_markup=None
+        )
         # f"Укажите число: {new_value}",
 
 
@@ -84,9 +92,9 @@ async def get_address(message: types.Message, state: FSMContext):
     await edit_json_file("title", data["name"])
     # print(data)
     await state.clear()
-    chat_id, video_id, title, artist = await read_json_data()
+    data = await message_track()
     await message.answer(
-        f'Название: {title}\nИсполнитель: {artist}\n<a href="https://www.youtube.com/watch?v={video_id}">link</a>',
+        data[0],
         reply_markup=manage_track(),
         disable_web_page_preview=False,
     )
@@ -96,8 +104,11 @@ async def get_address(message: types.Message, state: FSMContext):
 async def edit_title(callback: types.CallbackQuery, state: FSMContext) -> None:
     # chat_id, video_id, title, artist = await read_json_data()
     await state.set_state(AskArtist.name)
+    data = await message_track()
     with suppress(TelegramBadRequest):
-        await callback.message.edit_text(text="Укажите исполнителя:", reply_markup=None)
+        await callback.message.edit_text(
+            text=f"Укажите исполнителя(<code>{data[4]}</code>:", reply_markup=None
+        )
         # f"Укажите число: {new_value}",
 
 
@@ -110,9 +121,9 @@ async def get_address(message: types.Message, state: FSMContext):
     await edit_json_file("artist", data["name"])
     # print(data)
     await state.clear()
-    chat_id, video_id, title, artist = await read_json_data()
+    data = await message_track()
     await message.answer(
-        f'Название: {title}\nИсполнитель: {artist}\n<a href="https://www.youtube.com/watch?v={video_id}">link</a>',
+        data[0],
         reply_markup=manage_track(),
         disable_web_page_preview=False,
     )
