@@ -11,6 +11,8 @@ jobs:
         token: ${{ secrets.TELEGRAM_TOKEN }}
         format: markdown
         message: |  #https://help.github.com/en/actions/reference/contexts-and-expression-syntax-for-github-actions#github-context
+            *\ud83e\uddf6[[${{ github.repository }}](github.com/${{ github.repository }})] New commit*
+
             [${{ github.actor }}](github.com/${{ github.actor }}) created commit:
 
             *Commit message:* ${{ github.event.head_commit.message }}
