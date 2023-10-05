@@ -35,10 +35,15 @@ async def get_data_db():
                     # Далее обрабатывайте данные, как вам нужно
                 else:
                     logging.error("Ошибка при получении данных из JSON.")
+                cursor.close()
                 return chat_id, video_id, title, artist
 
             else:
                 logging.critical("mda")
+
         except Exception as e:
             logging.error(f"Ошибка при получении данных: {str(e)}")
             logging.error("Ошибка:\n", traceback.format_exc())
+            cursor.close()
+        finally:
+            cursor.close()
