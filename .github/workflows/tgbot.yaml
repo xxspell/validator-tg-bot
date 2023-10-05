@@ -9,7 +9,7 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        format: md
+        format: markdown
         message: |  #https://help.github.com/en/actions/reference/contexts-and-expression-syntax-for-github-actions#github-context
             [${{ github.actor }}](github.com/${{ github.actor }}) created commit:
             
