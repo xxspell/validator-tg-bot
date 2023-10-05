@@ -11,7 +11,7 @@ jobs:
         token: ${{ secrets.TELEGRAM_TOKEN }}
         format: markdown
         message: |  #https://help.github.com/en/actions/reference/contexts-and-expression-syntax-for-github-actions#github-context
-            *[►](https://github.com/${{ github.repository }}/commit/${{github.sha}}) New commit at ${{ github.repository }}*
+            [►](https://github.com/${{ github.repository }}/commit/${{github.sha}}) *New commit at ${{ github.repository }}*
 
             ◄ [${{ github.actor }}](github.com/${{ github.actor }}) created commit:
 
