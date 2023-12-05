@@ -70,7 +70,7 @@ CREATE TABLE videos (
 5. Запустите бота, используя:
 
  ```shell
-python bot.py
+python main.py
 ```
 
 6. Введите `/start` в чате с ботом и начните использовать функционал.
