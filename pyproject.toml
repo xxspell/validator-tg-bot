@@ -9,7 +9,7 @@ readme = "README.md"
 python = "^3.10"
 pymysql = "^1.1.0"
 ruff = "^0.1.8"
-aiogram = "^3.2.0"
+aiogram = "^3.3.0"
 python-dotenv = "^1.0.0"
 pre-commit = "^3.6.0"
 
